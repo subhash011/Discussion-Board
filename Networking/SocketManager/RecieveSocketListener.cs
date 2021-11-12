@@ -99,7 +99,7 @@ namespace Networking
                     //Get NetworkStream to read message
                     NetworkStream networkStream = _clientSocket.GetStream();
 
-                    //Loops until it finds the end of file "EOF" in the message
+                    //If network stream is available than read 
                     while (networkStream.DataAvailable)
                     {
                         byte[] inStream = new byte[Threshold];
