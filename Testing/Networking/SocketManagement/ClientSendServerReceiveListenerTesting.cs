@@ -64,18 +64,21 @@ namespace Testing
         [Test, Category("pass")]
         public void MultiplePacketSingleClientSendServerReceiveListenerTest()
         {
-            String msg1 = "first packet ";
+            String msg1 ;
             String identifier = "S";
-            String msg2 = "second packet ";
-            _client3.Send(msg1, identifier);
-            _client3.Send(msg2, identifier);
-            Thread.Sleep(300);
+            for (int i=1;i<=30;i++)
+            {
+                msg1 = "packet" + i.ToString();
+                _client3.Send(msg1,identifier);
+            }
+            Thread.Sleep(1000);
 
-            Packet p1 = _server.FrontPacket();
-            Assert.AreEqual(msg1, p1.SerializedData);
-            
-            Packet p2 = _server.FrontPacket();
-            Assert.AreEqual(msg2, p2.SerializedData);
+            for (int i = 1; i <= 30; i++)
+            {
+                msg1 = "packet" + i.ToString();
+                Packet p1 = _server.FrontPacket();
+                Assert.AreEqual(msg1, p1.SerializedData);
+            }
         }
 
         [Test, Category("pass")]

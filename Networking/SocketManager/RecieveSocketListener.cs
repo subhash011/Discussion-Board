@@ -70,7 +70,7 @@ namespace Networking
             String serializedData = "";
 
             //search of EOF to get  end of the message
-            for (int i = 0; i < data.Length - 3; i++)
+            for (int i = 0; i < data.Length - 2; i++)
             {
                 if (data[i] == 'E' && data[i + 1] == 'O' && data[i + 2] == 'F')
                 {
@@ -104,17 +104,22 @@ namespace Networking
                     {
                         byte[] inStream = new byte[Threshold];
                         networkStream.Read(inStream, 0, inStream.Length);
-                        message += System.Text.Encoding.ASCII.GetString(inStream);
-
-                        if (message.Contains("EOF"))
+                        string buf = System.Text.Encoding.ASCII.GetString(inStream);
+                        for (int i = 0; i < Threshold; i++)
                         {
-                            //Calls GetPacket method to form packet object out of received message
-                            Packet packet = GetPacket(message);
-
-                            //Calls the PushToQueue method to push packet into queue
-                            PushToQueue(packet.SerializedData, packet.ModuleIdentifier);
-                            message = "";
-                            break;
+                            if (buf[i] != '\0')
+                            {
+                                message = message + buf[i];
+                                if (message.Contains("EOF"))
+                                {
+                                    //Calls GetPacket method to form packet object out of received message
+                                    Packet packet = GetPacket(message);
+                                    //Calls the PushToQueue method to push packet into queue
+                                    PushToQueue(packet.SerializedData, packet.ModuleIdentifier);
+                                    message = "";
+                                }
+                            }
+                           
                         }
                     }
                 }
